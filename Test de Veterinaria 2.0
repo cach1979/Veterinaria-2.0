@@ -1,0 +1,661 @@
+package co.edu.uniquindio.poo;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import java.util.Set;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+import java.util.HashSet;
+
+import java.util.Comparator;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.logging.Logger;
+
+public class Veterinaria2Test  {
+
+    private static final Logger LOG = Logger.getLogger(Veterinaria2Test.class.getName());
+
+    @Test
+    void testDataCompleta() {
+        LOG.info("Inicio verificación Datos completos");
+        Veterinaria2 animal = new Veterinaria2("15591519874465","Sasha", "Perro", "Labrador", "Femenino", "Azul", 3, 25);
+        assertNotNull(animal);
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    void testNombreNulo() {
+        LOG.info("Inicio verificación Datos de nombres Nulos");
+        assertThrows(AssertionError.class, () -> {
+            new Veterinaria2("3165849848941984*",null, "Perro", "Labrador", "Femenino", "Azul", 3, 25);
+        });
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    void testEspecieVacia() {
+        LOG.info("Inicio verificación Datos de especie vacia");
+        assertThrows(AssertionError.class, () -> {
+            new Veterinaria2("215648132165","Sasha", "", "Labrador", "Femenino", "Azul", 3, 25);
+        });
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    void testIDNotNullAndNotEmpty() {
+        // Caso de prueba: ID no es nulo ni está vacío
+        LOG.info("Inicio verificación Datos de ID no es vacio ni nulo ");
+        String ID = "065";
+        assertTrue(ID != null && !ID.isBlank(), "El ID debe de ser diferente y único");
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    void testIDNull() {
+        // Caso de prueba: ID es nulo
+        LOG.info("Inicio verificación Datos de ID nulo");
+        String ID = null;
+        assertFalse(ID != null && !ID.isBlank(), "El ID debe de ser diferente y único");
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    void testIDEmpty() {
+        // Caso de prueba: ID está vacío
+        LOG.info("Inicio verificación Datos de ID vacia");
+        String ID = "";
+        assertFalse(ID != null && !ID.isBlank(), "El ID debe de ser diferente y único");
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    void testRazaNula() {
+        LOG.info("Inicio verificación Datos de raza Nula");
+        assertThrows(AssertionError.class, () -> {
+            new Veterinaria2("616519851665","Sasha", "Perro", null, "Femenino", "Azul", 3, 25);
+        });
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    void testGeneroVacio() {
+        LOG.info("Inicio verificación Datos genero vacio");
+        assertThrows(AssertionError.class, () -> {
+            new Veterinaria2("659841596","Sasha", "Perro", "Labrador", "", "Azul", 3, 25);
+        });
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    void testColorNulo() {
+        LOG.info("Inicio verificación Datos de color nulo");
+        assertThrows(AssertionError.class, () -> {
+            new Veterinaria2("651984984968","Sasha", "Perro", "Labrador", "Femenino", null, 3, 25);
+        });
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    void testEdadCero() {
+        LOG.info("Inicio verificación Datos edad cero");
+        assertThrows(AssertionError.class, () -> {
+            new Veterinaria2("316516589465","Sasha", "Perro", "Labrador", "Femenino", "Azul", 0, 25);
+        });
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    void testEdadNegativo() {
+        LOG.info("Inicio verificación Datos edad negativa");
+        assertThrows(AssertionError.class, () -> {
+            new Veterinaria2("561965165198","Sasha", "Perro", "Labrador", "Femenino", "Azul", -3, 25);
+        });
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    void testPesoCero() {
+        LOG.info("Inicio verificación Datos peso cero");
+        assertThrows(AssertionError.class, () -> {
+            new Veterinaria2("61596185","Sasha", "Perro", "Labrador", "Femenino", "Azul", 0, -25);
+        });
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    void testPesoNegativo() {
+        LOG.info("Inicio verificación Datos peso negativo");
+        assertThrows(AssertionError.class, () -> {
+            new Veterinaria2("561417956","Sasha", "Perro", "Labrador", "Femenino", "Azul", 3, -25);
+        });
+        LOG.info("Fin verificación");
+
+    }
+
+     @Test
+    public void testFiltrarMascotasMayores() {
+        LOG.info("Inicio verificación Datos de filtro de mascotas");
+        List<Veterinaria2> listaVeterinaria2 = Veterinaria2.generateListOfAnimals();
+
+        List<Veterinaria2> mascotasMayores = Veterinaria2.filterAnimalsByAge(listaVeterinaria2, 10);
+        // Asegúrate de que ninguna mascota en mascotasMayores tenga menos de 10 años
+        for (Veterinaria2 mascota : mascotasMayores) {
+            Assertions.assertTrue(mascota.edad() > 10);
+        }
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    public void testOrdenarNombresAlfabeticamente() {
+        LOG.info("Inicio verificación Datos del ordenador de nombres alfabeticamente");
+        List<Veterinaria2> listaVeterinaria2 = Veterinaria2.generateListOfAnimals();
+
+        listaVeterinaria2.sort(Comparator.comparing(Veterinaria2::nombre));
+        // Asegúrate de que los nombres estén ordenados alfabéticamente
+        for (int i = 0; i < listaVeterinaria2.size() - 1; i++) {
+            Assertions.assertTrue(listaVeterinaria2.get(i).nombre().compareTo(listaVeterinaria2.get(i + 1).nombre()) <= 0);
+        }
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    public void testOrdenarEdadesDeMayorAMenor() {
+        LOG.info("Inicio verificación Datos del ordenador de edades demayor a menor");
+        List<Veterinaria2> listaVeterinaria2 = Veterinaria2.generateListOfAnimals();
+
+        listaVeterinaria2.sort(Comparator.comparingInt(Veterinaria2::edad).reversed());
+        // Asegúrate de que las edades estén ordenadas de mayor a menor
+        for (int i = 0; i < listaVeterinaria2.size() - 1; i++) {
+            Assertions.assertTrue(listaVeterinaria2.get(i).edad() >= listaVeterinaria2.get(i + 1).edad());
+        }
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    public void testFilterAnimalsByAge() {
+        LOG.info("Inicio verificación Datos del test de filtracion de animales por edad");
+        List<Veterinaria2> listaVeterinaria2 = Veterinaria2.generateListOfAnimals();
+        
+        // Filtrar animales mayores de 5 años
+        List<Veterinaria2> result = Veterinaria2.filterAnimalsByAge(listaVeterinaria2, 5);
+        
+        // Comprobar que solo hay animales mayores de 5 años en el resultado
+        for (Veterinaria2 animal : result) {
+            assertTrue(animal.edad() > 5);
+        }
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    public void testSortAnimalsByName() {
+        LOG.info("Inicio verificación Datos de test del ordenador de los nombres de los animales");
+        List<Veterinaria2> listaVeterinaria2 = Veterinaria2.generateListOfAnimals();
+        
+        // Ordenar animales por nombre alfabéticamente
+        List<Veterinaria2> sortedList = listaVeterinaria2.stream()
+        .sorted(Comparator.comparing(Veterinaria2::nombre))
+        .collect(Collectors.toList());
+        
+        // Comprobar que los nombres están ordenados correctamente
+        for (int i = 0; i < sortedList.size() - 1; i++) {
+            assertTrue(sortedList.get(i).nombre().compareTo(sortedList.get(i+1).nombre()) <= 0);
+        }
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    public void testContadorEspecies() {
+
+        LOG.info("Inicio verificación Datos de test de contador de especies");
+        
+        List<Veterinaria2> listaVeterinaria = new ArrayList<>();
+
+        listaVeterinaria.add(new Veterinaria2("3216549865","Sasha", "Perro", "Labrador", "Femenino", "Azul", 3, 25));
+
+        listaVeterinaria.add(new Veterinaria2("125698189","Simba", "Gato", "Guppy", "Masculino", "Verde", 2, 10));
+
+        listaVeterinaria.add(new Veterinaria2("3211386464","Puffy", "Tortuga", "Siberiano", "Masculino", "Cafe", 5, 15));
+
+        listaVeterinaria.add(new Veterinaria2("321658944896","Luna", "Pez", "Persa", "Femenino", "Gris", 4, 12));
+
+        listaVeterinaria.add(new Veterinaria2("2163548589","Rocky", "Perro", "Bulldog", "Masculino", "Negro", 7, 30));
+
+        listaVeterinaria.add(new Veterinaria2("3215684","Bella", "Gato", "Siames", "Femenino", "Verde", 1, 8));
+
+        listaVeterinaria.add(new Veterinaria2("32165849","Max", "Tortuga", "Pastor", "Masculino", "Blanco", 4, 28));
+
+        listaVeterinaria.add(new Veterinaria2("326545661","Nina", "Pez", "Golfina", "Femenino", "Azul", 3, 18));
+
+        listaVeterinaria.add(new Veterinaria2("32165489498","Lucky", "Perro", "Labrador", "Masculino", "Verde", 6, 22));
+
+        listaVeterinaria.add(new Veterinaria2("32165498456","Daisy", "Gato", "Persa", "Femenino", "Verde", 2, 10));
+
+        int contadorPerros = 0;
+        int contadorGatos = 0;
+        int contadorTortugas = 0;
+        int contadorPeces = 0;
+
+        for (Veterinaria2 animal : listaVeterinaria) {
+
+            if (animal.especie().equals("Perro")) {
+                contadorPerros++;
+
+            } else if (animal.especie().equals("Gato")) {
+                contadorGatos++;
+
+            } else if (animal.especie().equals("Tortuga")) {
+                contadorTortugas++;
+
+            } else if (animal.especie().equals("Pez")) {
+                contadorPeces++;
+
+            }
+        }
+
+        assertEquals(3, contadorPerros);
+        assertEquals(3, contadorGatos);
+        assertEquals(2, contadorTortugas);
+        assertEquals(2, contadorPeces); 
+
+        LOG.info("Fin verificación");
+    }
+
+    @Test
+    public void testContadorRaza() {
+
+        LOG.info("Inicio verificación Datos de test de contador de raza");
+
+        List<Veterinaria2> listaVeterinaria = new ArrayList<>();
+
+        listaVeterinaria.add(new Veterinaria2("32156461","Sasha", "Perro", "Labrador", "Femenino", "Azul", 3, 25));
+
+        listaVeterinaria.add(new Veterinaria2("3156+4849","Simba", "Gato", "Guppy", "Masculino", "Verde", 2, 10));
+
+        listaVeterinaria.add(new Veterinaria2("32165189749","Puffy", "Tortuga", "Siberiano", "Masculino", "Cafe", 5, 15));
+
+        listaVeterinaria.add(new Veterinaria2("32154","Luna", "Pez", "Persa", "Femenino", "Gris", 4, 12));
+
+        listaVeterinaria.add(new Veterinaria2("2145764589","Rocky", "Perro", "Bulldog", "Masculino", "Negro", 7, 30));
+
+        listaVeterinaria.add(new Veterinaria2("31654","Bella", "Gato", "Siames", "Femenino", "Verde", 1, 8));
+
+        listaVeterinaria.add(new Veterinaria2("3216548974","Max", "Tortuga", "Pastor", "Masculino", "Blanco", 4, 28));
+
+        listaVeterinaria.add(new Veterinaria2("321654894","Nina", "Pez", "Golfina", "Femenino", "Azul", 3, 18));
+
+        listaVeterinaria.add(new Veterinaria2("32165465","Lucky", "Perro", "Labrador", "Masculino", "Verde", 6, 22));
+
+        listaVeterinaria.add(new Veterinaria2("32563156465","Daisy", "Gato", "Persa", "Femenino", "Verde", 2, 10));
+
+        int contadorPersas = 0;
+         int contadorSiameses = 0;
+         int contadorSiberianos = 0;
+         int contadorBulldogs = 0;
+         int contadorPastores = 0;
+         int contadorLabradores = 0;
+         int contadorGolfinas = 0;
+         int contadorCaguamas = 0;
+         int contadorCareys = 0;
+         int contadorBettas = 0;
+         int contadorGuppys = 0;
+         int contadorTetraNeones = 0;
+
+         for (Veterinaria2 animal : listaVeterinaria) {
+            if (animal.raza().equals("Persa")) {
+                contadorPersas++;
+
+        } else if (animal.raza().equals("Siames")) {
+                contadorSiameses++;
+
+        }else if (animal.raza().equals("Siberiano")) {
+               contadorSiberianos++;
+
+        }else if (animal.raza().equals("Bulldog")) {
+               contadorBulldogs++;
+
+        }else if (animal.raza().equals("Pastor")) {
+            contadorPastores++;
+
+        }else if (animal.raza().equals("Labrador")) {
+            contadorLabradores++;
+
+        }else if (animal.raza().equals("Golfina")) {
+            contadorGolfinas++;
+
+        }else if (animal.raza().equals("Caguama")) {
+            contadorCaguamas++;
+
+        }else if (animal.raza().equals("Carey")) {
+            contadorCareys++;
+
+        }else if (animal.raza().equals("Betta")) {
+            contadorBettas++;
+
+        }else if (animal.raza().equals("Guppy")) {
+            contadorGuppys++;
+
+        }else if (animal.raza().equals("TetraNeon")) {
+            contadorTetraNeones++;
+
+        }
+        }
+
+        assertEquals(2, contadorPersas);
+        assertEquals(1, contadorSiameses);
+        assertEquals(1, contadorSiberianos);
+        assertEquals(1, contadorBulldogs); 
+        assertEquals(1, contadorPastores);
+        assertEquals(2, contadorLabradores);
+        assertEquals(1, contadorGolfinas); 
+        assertEquals(0, contadorCaguamas);
+        assertEquals(0, contadorCareys);
+        assertEquals(0, contadorBettas);
+        assertEquals(1, contadorGuppys); 
+        assertEquals(0, contadorTetraNeones); 
+
+        LOG.info("Fin verificación");
+}
+
+@Test
+public void testContadorGenero() {
+
+    LOG.info("Inicio verificación Datos de test de contador de genero");
+
+    List<Veterinaria2> listaVeterinaria = new ArrayList<>();
+
+    listaVeterinaria.add(new Veterinaria2("3216489443464","Sasha", "Perro", "Labrador", "Femenino", "Azul", 3, 25));
+
+    listaVeterinaria.add(new Veterinaria2("32156489891","Simba", "Gato", "Guppy", "Masculino", "Verde", 2, 10));
+
+    listaVeterinaria.add(new Veterinaria2("245456465","Puffy", "Tortuga", "Siberiano", "Masculino", "Cafe", 5, 15));
+
+    listaVeterinaria.add(new Veterinaria2("1156498651","Luna", "Pez", "Persa", "Femenino", "Gris", 4, 12));
+
+    listaVeterinaria.add(new Veterinaria2("351654984","Rocky", "Perro", "Bulldog", "Masculino", "Negro", 7, 30));
+
+    listaVeterinaria.add(new Veterinaria2("3216549846","Bella", "Gato", "Siames", "Femenino", "Verde", 1, 8));
+
+    listaVeterinaria.add(new Veterinaria2("216356489","Max", "Tortuga", "Pastor", "Masculino", "Blanco", 4, 28));
+
+    listaVeterinaria.add(new Veterinaria2("23156489","Nina", "Pez", "Golfina", "Femenino", "Azul", 3, 18));
+
+    listaVeterinaria.add(new Veterinaria2("321654897","Lucky", "Perro", "Labrador", "Masculino", "Verde", 6, 22));
+
+    listaVeterinaria.add(new Veterinaria2("321848998","Daisy", "Gato", "Persa", "Femenino", "Verde", 2, 10));
+
+    int contadorMasculinos = 0;
+    int contadorFemeninos = 0;
+
+    for (Veterinaria2 animal : listaVeterinaria) {
+        if (animal.genero().equals("Masculino")) {
+            contadorMasculinos++;
+
+    } else if (animal.genero().equals("Femenino")) {
+            contadorFemeninos++;
+
+    }
+}
+
+assertEquals(5, contadorMasculinos);
+assertEquals(5, contadorFemeninos);
+
+LOG.info("Fin verificación");
+
+}
+
+@Test
+public void testContadorColor() {
+
+    LOG.info("Inicio verificación Datos de test de contador de color");
+
+    List<Veterinaria2> listaVeterinaria = new ArrayList<>();
+
+    listaVeterinaria.add(new Veterinaria2("226263262","Sasha", "Perro", "Labrador", "Femenino", "Azul", 3, 25));
+
+    listaVeterinaria.add(new Veterinaria2("15694189","Simba", "Gato", "Guppy", "Masculino", "Verde", 2, 10));
+
+    listaVeterinaria.add(new Veterinaria2("35619784156","Puffy", "Tortuga", "Siberiano", "Masculino", "Cafe", 5, 15));
+
+    listaVeterinaria.add(new Veterinaria2("32519784","Luna", "Pez", "Persa", "Femenino", "Gris", 4, 12));
+
+    listaVeterinaria.add(new Veterinaria2("61598491","Rocky", "Perro", "Bulldog", "Masculino", "Negro", 7, 30));
+
+    listaVeterinaria.add(new Veterinaria2("7527837523","Bella", "Gato", "Siames", "Femenino", "Verde", 1, 8));
+
+    listaVeterinaria.add(new Veterinaria2("51951957","Max", "Tortuga", "Pastor", "Masculino", "Blanco", 4, 28));
+
+    listaVeterinaria.add(new Veterinaria2("745273214","Nina", "Pez", "Golfina", "Femenino", "Azul", 3, 18));
+
+    listaVeterinaria.add(new Veterinaria2("7532748354","Lucky", "Perro", "Labrador", "Masculino", "Verde", 6, 22));
+
+    listaVeterinaria.add(new Veterinaria2("8375423783","Daisy", "Gato", "Persa", "Femenino", "Verde", 2, 10));
+
+    int contadorAzules = 0;
+    int contadorVerdes = 0;
+    int contadorCafes = 0;
+    int contadorNegros = 0;
+    int contadorGrises = 0;
+    int contadorBlancos = 0;
+    int contadorManchados = 0;
+    int contadorDorados = 0;
+
+    for (Veterinaria2 animal : listaVeterinaria) {
+        if (animal.color().equals("Azul")) {
+            contadorAzules++;
+
+    } else if (animal.color().equals("Verde")) {
+            contadorVerdes++;
+
+    }else if (animal.color().equals("Cafe")) {
+           contadorCafes++;
+
+    }else if (animal.color().equals("Negro")) {
+           contadorNegros++;
+
+    }else if (animal.color().equals("Gris")) {
+        contadorGrises++;
+
+    }else if (animal.color().equals("Blanco")) {
+        contadorBlancos++;
+
+    }else if (animal.color().equals("Manchado")) {
+        contadorManchados++;
+
+    }else if (animal.color().equals("Dorado")) {
+        contadorDorados++;
+
+    }      
+} 
+        assertEquals(2, contadorAzules);
+        assertEquals(4, contadorVerdes);
+        assertEquals(1, contadorCafes);
+        assertEquals(1, contadorNegros); 
+        assertEquals(1, contadorGrises);
+        assertEquals(1, contadorBlancos);
+        assertEquals(0, contadorManchados); 
+        assertEquals(0, contadorDorados);
+        
+        LOG.info("Fin verificación");
+
+    }
+
+    @Test
+    public void testGetID() {
+        Veterinaria2 veterinaria = new Veterinaria2("1235687416","gary","Tortuga","Caguama","masculino","manchado",105,30);
+        assertEquals("1235687416", veterinaria.getID());
+    }
+
+    @Test
+    public void testListaVeterinaria2SinRepetidos() {
+        Set<Veterinaria2> listaVeterinaria2 = new HashSet<>();
+        listaVeterinaria2.add(new Veterinaria2("11595","gary","Tortuga","Caguama","masculino","manchado",105,30));
+        listaVeterinaria2.add(new Veterinaria2("26518","gary","Tortuga","Caguama","masculino","manchado",105,30));
+        listaVeterinaria2.add(new Veterinaria2("35165","gary","Tortuga","Caguama","masculino","manchado",105,30));
+
+        assertFalse(verificarRepetidos(listaVeterinaria2));
+    }
+
+    @Test
+    public void testListaVeterinaria2ConRepetidos() {
+        Set<Veterinaria2> listaVeterinaria2 = new HashSet<>();
+        listaVeterinaria2.add(new Veterinaria2("1156","bob","perro","bulldog","masculino","negro",23,45));
+        listaVeterinaria2.add(new Veterinaria2("1156","gary","Tortuga","Caguama","masculino","manchado",105,30));
+        listaVeterinaria2.add(new Veterinaria2("1156","bob","perro","bulldog","masculino","negro",23,45)); 
+
+        assertTrue(verificarRepetidos(listaVeterinaria2));
+    }
+
+    private boolean verificarRepetidos(Set<Veterinaria2> listaVeterinaria2) {
+        Set<Integer> idsSet = new HashSet<>();
+        boolean repetido = false;
+
+        for (Veterinaria2 mascotas : listaVeterinaria2) {
+            if (!idsSet.add(Integer.parseInt(mascotas.getID()))) {
+                repetido = true;
+                break;
+            }
+        }
+
+        return repetido;
+    }
+
+    @Test
+    void testAgregarAnimal_IdExistente() {
+        // Configurar la entrada del usuario simulada
+        String input = "001\nSasha\nPerro\nLabrador\nFemenino\nAzul\n3\n25\nn";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
+        // Configurar la lista y el conjunto de IDs
+        List<Veterinaria2> listaVeterinaria2 = new ArrayList<>();
+        Set<String> ids = new HashSet<>();
+        ids.add("001");
+
+        // Crear un objeto de la clase que contiene el código a probar
+        Veterinaria2 veterinaria = new Veterinaria2("1156","bob","perro","bulldog","masculino","negro",23,45);
+
+        // Ejecutar el método que se va a probar
+        veterinaria.agregarAnimal(listaVeterinaria2, ids);
+
+        // Verificar que el animal no se agregó debido a un ID existente
+        assertEquals(0, listaVeterinaria2.size());
+    }
+
+    @Test
+    void testAgregarAnimal_IdNuevo() {
+        // Configurar la entrada del usuario simulada
+        String input = "002\nSimba\nGato\nSiames\nMasculino\nBlanco\n4\n15\nn";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
+        // Configurar la lista y el conjunto de IDs
+        List<Veterinaria2> listaVeterinaria2 = new ArrayList<>();
+        Set<String> ids = new HashSet<>();
+        ids.add("001");
+
+        // Crear un objeto de la clase que contiene el código a probar
+        Veterinaria2 veterinaria = new Veterinaria2("002","Simba","Gato","Siames","Masculino","Blanco",4,15);
+
+        // Ejecutar el método que se va a probar
+        veterinaria.agregarAnimal(listaVeterinaria2, ids);
+
+        // Verificar que el animal se agregó correctamente
+        assertEquals(0, listaVeterinaria2.size());
+    }
+
+    @Test
+    void testAgregarAnimal_PesoNegativo() {
+        // Configurar la entrada del usuario simulada
+        String input = "003\nLuna\nPez\nDorado\nFemenino\nNaranja\n2\n-5\nn";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
+        // Configurar la lista y el conjunto de IDs
+        List<Veterinaria2> listaVeterinaria2 = new ArrayList<>();
+        Set<String> ids = new HashSet<>();
+
+        // Crear un objeto de la clase que contiene el código a probar
+        Veterinaria2 veterinaria = new Veterinaria2("1156","bob","perro","bulldog","masculino","negro",23,45);
+
+        // Ejecutar el método que se va a probar
+        veterinaria.agregarAnimal(listaVeterinaria2, ids);
+
+        // Verificar que el animal no se agregó debido a un peso negativo
+        assertEquals(0, listaVeterinaria2.size());
+    }
+
+    @Test
+    void testAgregarAnimal_EdadNegativa() {
+        // Configurar la entrada del usuario simulada
+        String input = "004\nRocky\nPerro\nBulldog\nMasculino\nNegro\n-3\n20\nn";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
+        // Configurar la lista y el conjunto de IDs
+        List<Veterinaria2> listaVeterinaria2 = new ArrayList<>();
+        Set<String> ids = new HashSet<>();
+
+        // Crear un objeto de la clase que contiene el código a probar
+        Veterinaria2 veterinaria = new Veterinaria2("1156","bob","perro","bulldog","masculino","negro",23,45);
+
+        // Ejecutar el método que se va a probar
+        veterinaria.agregarAnimal(listaVeterinaria2, ids);
+
+        // Verificar que el animal no se agregó debido a una edad negativa
+        assertEquals(0, listaVeterinaria2.size());
+    }
+
+    @Test
+    void testAgregarAnimal_GeneroInvalido() {
+        // Configurar la entrada del usuario simulada
+        String input = "005\nMax\nTortuga\nTortuga Terrestre\nMacho\nVerde\n10\n25\nn";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
+        // Configurar la lista y el conjunto de IDs
+        List<Veterinaria2> listaVeterinaria2 = new ArrayList<>();
+        Set<String> ids = new HashSet<>();
+
+        // Crear un objeto de la clase que contiene el código a probar
+        Veterinaria2 veterinaria = new Veterinaria2("1156","bob","perro","bulldog","masculino","negro",23,45);
+
+        // Ejecutar el método que se va a probar
+        veterinaria.agregarAnimal(listaVeterinaria2, ids);
+
+        // Verificar que el animal no se agregó debido a un género inválido
+        assertEquals(0, listaVeterinaria2.size());
+    }
+
+    @Test
+    void testAgregarAnimal() {
+        // Configurar la entrada del usuario simulada
+        String input = "001\nSasha\nPerro\nLabrador\nFemenino\nAzul\n3\n25\nn";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
+        // Configurar la lista y el conjunto de IDs
+        List<Veterinaria2> listaVeterinaria2 = new ArrayList<>();
+        Set<String> ids = new HashSet<>();
+        ids.add("001");
+
+        // Crear un objeto de la clase que contiene el código a probar
+        Veterinaria2 veterinaria = new Veterinaria2("001","Sasha","Perro","Labrador","Femenino","Azul",3,25);
+
+        // Ejecutar el método que se va a probar
+        veterinaria.agregarAnimal(listaVeterinaria2, ids);
+
+        // Verificar que se agregó correctamente
+        assertEquals(0, listaVeterinaria2.size());
+        assertEquals(1, ids.size()); 
+
+    }
+}
